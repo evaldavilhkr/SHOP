@@ -4,13 +4,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>M/S AL-WASEE HARDWARE AND SANITARY - ইনভেন্টরি ও বিলিং</title>
-    <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <!-- Google Fonts for better Bengali typography -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;600;700&display=swap" rel="stylesheet">
-    <!-- Firebase App and Firestore Libraries -->
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
     <style>
@@ -34,7 +31,6 @@
             background: rgba(255, 255, 255, 0.08);
             border-color: rgba(255, 255, 255, 0.15);
         }
-        /* Custom Scrollbar */
         ::-webkit-scrollbar {
             width: 6px;
         }
@@ -48,7 +44,6 @@
         ::-webkit-scrollbar-thumb:hover {
             background: rgba(255, 255, 255, 0.25);
         }
-        /* Print Styles */
         @media print {
             body {
                 background: white !important;
@@ -70,7 +65,6 @@
 </head>
 <body class="text-gray-100 antialiased selection:bg-indigo-500 selection:text-white">
 
-    <!-- পাসওয়ার্ড লগইন স্ক্রিন -->
     <div id="login-screen" class="fixed inset-0 flex items-center justify-center z-50 px-4">
         <div class="glass-panel p-8 rounded-2xl shadow-2xl w-full max-w-md text-center border border-white/20">
             <div class="inline-flex items-center justify-center w-16 h-16 rounded-full bg-indigo-600/30 text-indigo-400 mb-4 border border-indigo-500/30">
@@ -90,10 +84,8 @@
         </div>
     </div>
 
-    <!-- মূল অ্যাপ্লিকেশন ইন্টারফেস -->
     <div id="main-app" class="max-w-7xl mx-auto px-4 py-8 hidden">
         
-        <!-- টপ হেডার বার -->
         <header class="glass-panel rounded-2xl p-6 mb-8 flex flex-col md:flex-row items-center justify-between border border-white/10 shadow-xl">
             <div class="text-center md:text-left mb-4 md:mb-0">
                 <h1 class="text-2xl md:text-3xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-indigo-400 via-purple-400 to-pink-400 tracking-wide">
@@ -112,7 +104,6 @@
 
         <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
             
-            <!-- ১. নতুন মাল আপলোড ফর্ম (ইনভেন্টরি) -->
             <div class="lg:col-span-5 glass-panel p-6 rounded-2xl shadow-xl border border-white/10 flex flex-col justify-between">
                 <div>
                     <div class="flex items-center gap-3 mb-6 border-b border-white/10 pb-4">
@@ -132,7 +123,7 @@
                         <div class="grid grid-cols-2 gap-4">
                             <div>
                                 <label class="block text-sm font-medium text-gray-300 mb-1">সাইজ:</label>
-                                <input type="text" id="prod-size" class="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-2.5 text-white focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent" placeholder="যেমন: L, XL, 10, 12">
+                                <input type="text" id="prod-size" class="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-2.5 text-white focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent" placeholder="যেমন: 1/2, 3/4, 1, 2">
                             </div>
                             <div>
                                 <label class="block text-sm font-medium text-gray-300 mb-1">পরিমাণ (পিস):</label>
@@ -159,7 +150,6 @@
                 </button>
             </div>
 
-            <!-- ২. বিক্রি ও ইনভয়েস তৈরি সেকশন -->
             <div class="lg:col-span-7 glass-panel p-6 rounded-2xl shadow-xl border border-white/10 flex flex-col justify-between">
                 <div>
                     <div class="flex items-center gap-3 mb-6 border-b border-white/10 pb-4">
@@ -171,7 +161,6 @@
                         <h2 class="text-xl font-bold text-white">মাল বিক্রি ও বিলিং তালিকা</h2>
                     </div>
 
-                    <!-- মালের তালিকা টেবিল -->
                     <div class="max-h-[340px] overflow-y-auto mb-6 border border-white/10 rounded-xl bg-black/20">
                         <table class="w-full text-left text-sm text-gray-300">
                             <thead class="sticky top-0 bg-slate-900/90 backdrop-blur text-gray-200 font-semibold border-b border-white/10">
@@ -181,15 +170,14 @@
                                     <th class="p-3">সাইজ</th>
                                     <th class="p-3 text-center">স্টক</th>
                                     <th class="p-3 text-right">দাম</th>
+                                    <th class="p-3 text-center w-24">বিক্রির পিস</th>
                                 </tr>
                             </thead>
                             <tbody id="product-list-tbody" class="divide-y divide-white/5">
-                                <!-- ফায়ারবেস থেকে ডেটা ডাইনামিকালি লোড হবে -->
-                            </tbody>
+                                </tbody>
                         </table>
                     </div>
 
-                    <!-- কাস্টমার ডিটেইলস -->
                     <div class="mb-4">
                         <label class="block text-sm font-medium text-gray-300 mb-1">কাস্টমারের নাম (ঐচ্ছিক):</label>
                         <input type="text" id="cust-name" class="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-2.5 text-white focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent" placeholder="ক্রেতার নাম লিখুন">
@@ -204,10 +192,8 @@
         </div>
     </div>
 
-    <!-- ৩. প্রিন্ট করার জন্য ইনভয়েস টেমপ্লেট -->
     <div id="invoice-print-area" class="hidden bg-white text-black p-8 max-w-md mx-auto border border-gray-300 shadow-lg font-sans">
         <div class="text-center mb-6 border-b-2 border-gray-800 pb-4">
-            <!-- দোকানের নাম বড়ো করে -->
             <h1 class="text-2xl font-black tracking-tight text-gray-900 leading-tight">
                 M/S AL-WASEE HARDWARE AND SANITARY
             </h1>
@@ -226,12 +212,12 @@
             <thead>
                 <tr class="border-b-2 border-gray-400 bg-gray-100 text-gray-700">
                     <th class="py-2 px-1">আইটেম বিবরণ (সাইজ)</th>
+                    <th class="py-2 px-1 text-center">পরিমাণ</th>
                     <th class="py-2 px-1 text-right">মূল্য</th>
                 </tr>
             </thead>
             <tbody id="invoice-items-tbody" class="divide-y divide-gray-200">
-                <!-- আইটেম লিস্ট ডাইনামিকালি বসবে -->
-            </tbody>
+                </tbody>
         </table>
         
         <div class="flex justify-between items-center font-extrabold text-lg border-t-2 border-gray-800 pt-3 px-1">
@@ -244,16 +230,15 @@
         </div>
     </div>
 
-
     <script>
-        // === ফায়ারবেস কনফিগারেশন ===
+        // === আপনার স্ক্রিনশট থেকে প্রাপ্ত রিয়েল ফায়ারবেস কনফিগারেশন ===
         const firebaseConfig = {
-            apiKey: "YOUR_API_KEY",
-            authDomain: "YOUR_AUTH_DOMAIN",
-            projectId: "YOUR_PROJECT_ID",
-            storageBucket: "YOUR_STORAGE_BUCKET",
-            messagingSenderId: "YOUR_MESSAGING_SENDER_ID",
-            appId: "YOUR_APP_ID"
+            apiKey: "AIzaSyChG36JqtsoYwSj4cyDjm45ZzcD60cFolk",
+            authDomain: "easy-50e2d.firebaseapp.com",
+            projectId: "easy-50e2d",
+            storageBucket: "easy-50e2d.appspot.com",
+            messagingSenderId: "137085905024",
+            appId: "1:137085905024:web:b0ba77c755eb9239a35e65"
         };
 
         // ফায়ারবেস ইনিশিয়ালাইজেশন
@@ -272,7 +257,6 @@
             }
         }
 
-        // এন্টার চাপলে লগইন হওয়ার শর্টকাট
         document.getElementById('password-input').addEventListener('keypress', function(e) {
             if (e.key === 'Enter') {
                 checkPassword();
@@ -311,7 +295,6 @@
             })
             .catch((error) => {
                 console.error("Error adding document: ", error);
-                alert("আপলোড করতে সমস্যা হয়েছে, আবার চেষ্টা করুন।");
             });
         }
 
@@ -326,23 +309,33 @@
                     const row = document.createElement('tr');
                     row.className = "hover:bg-white/5 transition-colors duration-150 cursor-pointer";
                     
-                    const stockDisplay = product.isNonInventory ? 
-                        `<span class="text-xs bg-amber-500/10 text-amber-400 px-2 py-0.5 rounded-full border border-amber-500/20 font-medium">Non-Inv</span>` : 
-                        `<span class="font-bold text-gray-200">${product.qty}</span>`;
+                    // লো-স্টক অ্যালার্ট: স্টক ৩ পিস বা তার কম হলে লাল রঙে হাইলাইট হবে
+                    let stockDisplay = "";
+                    if (product.isNonInventory) {
+                        stockDisplay = `<span class="text-xs bg-amber-500/10 text-amber-400 px-2 py-0.5 rounded-full border border-amber-500/20 font-medium">Non-Inv</span>`;
+                    } else if (product.qty <= 3) {
+                        stockDisplay = `<span class="font-bold text-rose-400 bg-rose-500/20 px-2 py-0.5 rounded border border-rose-500/30 animate-pulse">${product.qty} পিস (Low)</span>`;
+                    } else {
+                        stockDisplay = `<span class="font-bold text-gray-200">${product.qty}</span>`;
+                    }
 
                     row.innerHTML = `
                         <td class="p-3 text-center" onclick="event.stopPropagation();">
-                            <input type="checkbox" class="sale-checkbox w-4 h-4 text-emerald-600 bg-white/10 border-white/20 rounded focus:ring-emerald-500 focus:ring-offset-0" data-id="${doc.id}" data-name="${product.name}" data-size="${product.size}" data-price="${product.price}" data-qty="${product.qty}" data-noninv="${product.isNonInventory}">
+                            <input type="checkbox" class="sale-checkbox w-4 h-4 text-emerald-600 bg-white/10 border-white/20 rounded focus:ring-emerald-500 focus:ring-offset-0" data-id="${doc.id}" data-name="${product.name}" data-size="${product.size}" data-price="${product.price}" data-qty="${product.qty}" data-noninv="${product.isNonInventory}" onchange="toggleQtyInput(this)">
                         </td>
                         <td class="p-3 font-semibold text-white">${product.name}</td>
                         <td class="p-3 text-gray-400 font-medium">${product.size}</td>
                         <td class="p-3 text-center">${stockDisplay}</td>
                         <td class="p-3 text-right font-bold text-emerald-400">৳${product.price}</td>
+                        <td class="p-2 text-center" onclick="event.stopPropagation();">
+                            <input type="number" class="sale-qty-input w-20 bg-slate-800 border border-white/10 rounded px-2 py-1 text-center text-white text-sm focus:outline-none focus:ring-1 focus:ring-emerald-500" value="1" min="1" disabled id="qty-input-${doc.id}">
+                        </td>
                     `;
                     
                     row.addEventListener('click', () => {
                         const cb = row.querySelector('.sale-checkbox');
                         cb.checked = !cb.checked;
+                        toggleQtyInput(cb);
                     });
 
                     tbody.appendChild(row);
@@ -350,6 +343,22 @@
             }).catch((error) => {
                 console.error("Error loading products: ", error);
             });
+        }
+
+        // টিক দিলে পরিমাণের ইনপুট বক্স সচল বা অচল করার ফাংশন
+        function toggleQtyInput(checkbox) {
+            const docId = checkbox.getAttribute('data-id');
+            const qtyInput = document.getElementById(`qty-input-${docId}`);
+            if (checkbox.checked) {
+                qtyInput.disabled = false;
+                qtyInput.classList.remove('bg-slate-800', 'text-gray-500');
+                qtyInput.classList.add('bg-slate-900', 'text-white', 'border-emerald-500/50');
+            } else {
+                qtyInput.disabled = true;
+                qtyInput.value = "1";
+                qtyInput.classList.add('bg-slate-800');
+                qtyInput.classList.remove('bg-slate-900', 'border-emerald-500/50');
+            }
         }
 
         // === বিক্রি সম্পন্ন করা, অটো-মাইনাস ও ইনভয়েস প্রিন্ট ===
@@ -372,16 +381,19 @@
                 const price = parseFloat(cb.getAttribute('data-price'));
                 const currentQty = parseInt(cb.getAttribute('data-qty'));
                 const isNonInventory = cb.getAttribute('data-noninv') === 'true';
+                
+                // কাস্টম বিক্রির পরিমাণ নেওয়া
+                const sellQty = parseInt(document.getElementById(`qty-input-${docId}`).value) || 1;
 
-                totalAmount += price;
-                invoiceItems.push({ name, size, price });
+                totalAmount += (price * sellQty);
+                invoiceItems.push({ name, size, price, sellQty });
 
                 if (!isNonInventory) {
-                    if (currentQty > 0) {
+                    if (currentQty >= sellQty) {
                         const docRef = db.collection("products").doc(docId);
-                        batch.update(docRef, { qty: currentQty - 1 });
+                        batch.update(docRef, { qty: currentQty - sellQty });
                     } else {
-                        alert(`দুঃখিত, ${name} (${size}) স্টক এ নেই!`);
+                        alert(`দুঃখিত, ${name} (${size}) পর্যাপ্ত স্টক নেই! স্টকে আছে মাত্র ${currentQty} পিস।`);
                         stockError = true;
                     }
                 }
@@ -414,7 +426,8 @@
                 row.className = "text-gray-900";
                 row.innerHTML = `
                     <td class="py-2 px-1 font-medium">${item.name} <span class="text-xs text-gray-600 font-normal">(${item.size})</span></td>
-                    <td class="py-2 px-1 text-right font-semibold">৳${item.price}</td>
+                    <td class="py-2 px-1 text-center font-semibold">${item.sellQty} পিস</td>
+                    <td class="py-2 px-1 text-right font-semibold">৳${item.price * item.sellQty}</td>
                 `;
                 invTbody.appendChild(row);
             });
