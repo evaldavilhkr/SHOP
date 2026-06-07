@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>M/S AL-WASEE HARDWARE AND SANITARY - ইনভেন্টরি ও বিলিং v2</title>
+    <title>M/S AL-WASEE HARDWARE AND SANITARY - ইনভেন্টরি ও স্মার্ট বাকি খাতা v4</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -25,34 +25,15 @@
         .glass-card {
             background: rgba(255, 255, 255, 0.05);
             border: 1px solid rgba(255, 255, 255, 0.08);
-            transition: all 0.3s ease;
         }
-        .glass-card:hover {
-            background: rgba(255, 255, 255, 0.08);
-            border-color: rgba(255, 255, 255, 0.15);
-        }
-        ::-webkit-scrollbar {
-            width: 6px;
-        }
-        ::-webkit-scrollbar-track {
-            background: rgba(255, 255, 255, 0.02);
-        }
-        ::-webkit-scrollbar-thumb {
-            background: rgba(255, 255, 255, 0.15);
-            border-radius: 3px;
-        }
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: rgba(255, 255, 255, 0.02); }
+        ::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0.15); border-radius: 3px; }
+        
         @media print {
-            @page {
-                size: auto;
-                margin: 10mm;
-            }
-            body {
-                background: white !important;
-                color: black !important;
-            }
-            #main-app, #login-screen, .no-print {
-                display: none !important;
-            }
+            @page { size: auto; margin: 10mm; }
+            body { background: white !important; color: black !important; }
+            #main-app, #login-screen, .no-print { display: none !important; }
             #invoice-print-area {
                 display: block !important;
                 width: 100% !important;
@@ -65,7 +46,7 @@
         }
     </style>
 </head>
-<body class="text-gray-100 antialiased selection:bg-indigo-500 selection:text-white">
+<body class="text-gray-100 antialiased">
 
     <div id="login-screen" class="fixed inset-0 flex items-center justify-center z-50 px-4">
         <div class="glass-panel p-8 rounded-2xl shadow-2xl w-full max-w-md text-center border border-white/20">
@@ -76,49 +57,45 @@
             </div>
             <h2 class="text-2xl font-bold mb-1 text-white">সফটওয়্যার লগইন</h2>
             <p class="text-sm text-gray-400 mb-6">M/S AL-WASEE HARDWARE AND SANITARY</p>
-            
-            <div class="relative mb-4">
-                <input type="password" id="password-input" class="w-full bg-white/10 border border-white/20 rounded-xl px-4 py-3 text-center text-xl text-white tracking-widest focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent placeholder-white/30" placeholder="••••">
-            </div>
-            
-            <button onclick="checkPassword()" class="w-full bg-indigo-600 hover:bg-indigo-500 text-white py-3 rounded-xl font-semibold shadow-lg shadow-indigo-600/30 transition duration-200">প্রবেশ করুন</button>
+            <input type="password" id="password-input" class="w-full bg-white/10 border border-white/20 rounded-xl px-4 py-3 text-center text-xl text-white tracking-widest focus:outline-none focus:ring-2 focus:ring-indigo-500 mb-4" placeholder="••••">
+            <button onclick="checkPassword()" class="w-full bg-indigo-600 hover:bg-indigo-500 text-white py-3 rounded-xl font-semibold transition">প্রবেশ করুন</button>
             <p id="login-error" class="text-rose-400 text-sm mt-3 hidden font-medium">ভুল পাসওয়ার্ড! আবার চেষ্টা করুন।</p>
         </div>
     </div>
 
     <div id="main-app" class="max-w-7xl mx-auto px-4 py-6 hidden">
         
-        <header class="glass-panel rounded-2xl p-5 mb-6 flex flex-col md:flex-row items-center justify-between border border-white/10 shadow-xl">
-            <div class="text-center md:text-left mb-4 md:mb-0">
-                <h1 class="text-2xl md:text-3xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-indigo-400 via-purple-400 to-pink-400 tracking-wide">
+        <header class="glass-panel rounded-2xl p-5 mb-6 flex flex-col lg:flex-row items-center justify-between border border-white/10 shadow-xl gap-4">
+            <div class="text-center lg:text-left">
+                <h1 class="text-2xl md:text-3xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-indigo-400 via-purple-400 to-pink-400">
                     M/S AL-WASEE HARDWARE AND SANITARY
                 </h1>
-                <p class="text-sm text-indigo-300/80 font-medium mt-1">ইনভেন্টরি কন্ট্রোল ও স্মার্ট বিলিং ম্যানেজমেন্ট</p>
+                <p class="text-sm text-indigo-300/80 font-medium mt-1">ইনভেন্টরি, অ্যাডভান্সড সার্চ ও কাস্টমার বাকির ডিজিটাল খাতা</p>
             </div>
             
-            <div class="flex bg-black/30 p-1.5 rounded-xl border border-white/10 gap-1">
-                <button id="tab-billing-btn" onclick="switchTab('billing')" class="px-5 py-2 rounded-lg font-bold text-sm transition duration-150 bg-indigo-600 text-white shadow">
+            <div class="flex flex-wrap bg-black/30 p-1.5 rounded-xl border border-white/10 gap-1 justify-center">
+                <button id="tab-billing-btn" onclick="switchTab('billing')" class="px-4 py-2 rounded-lg font-bold text-sm transition bg-indigo-600 text-white shadow">
                     মাল বিক্রি ও সার্চ
                 </button>
-                <button id="tab-upload-btn" onclick="switchTab('upload')" class="px-5 py-2 rounded-lg font-bold text-sm transition duration-150 text-gray-400 hover:text-white">
+                <button id="tab-due-btn" onclick="switchTab('due')" class="px-4 py-2 rounded-lg font-bold text-sm transition text-gray-400 hover:text-white">
+                    বাকি ও জমা খাতা
+                </button>
+                <button id="tab-upload-btn" onclick="switchTab('upload')" class="px-4 py-2 rounded-lg font-bold text-sm transition text-gray-400 hover:text-white">
                     নতুন মাল আপলোড
                 </button>
             </div>
         </header>
 
         <div id="page-billing" class="grid grid-cols-1 lg:grid-cols-12 gap-6">
-            
-            <div class="lg:col-span-8 glass-panel p-6 rounded-2xl shadow-xl border border-white/10">
-                <div class="flex items-center justify-between mb-4 border-b border-white/10 pb-3">
-                    <div class="flex items-center gap-2">
-                        <h2 class="text-lg font-bold text-white">মালামালের স্টক তালিকা</h2>
-                    </div>
-                    <span class="text-xs bg-white/10 px-2.5 py-1 rounded-full text-gray-300 font-medium">টিক দিয়ে বিক্রির পরিমাণ বসান</span>
+            <div class="lg:col-span-8 glass-panel p-6 rounded-2xl border border-white/10 shadow-xl">
+                <div class="flex flex-col sm:flex-row gap-3 items-center justify-between mb-4 pb-4 border-b border-white/10">
+                    <input type="text" id="search-product-input" oninput="filterProductsLive()" class="w-full sm:max-w-xs bg-white/5 border border-white/10 rounded-xl pl-4 pr-4 py-2 text-white text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 placeholder-white/40" placeholder="মালের নাম বা সাইজ লিখে খুঁজুন...">
+                    <button id="toggle-show-all-btn" onclick="toggleShowAllProducts()" class="w-full sm:w-auto bg-indigo-600/20 hover:bg-indigo-600 text-indigo-300 hover:text-white px-4 py-2 rounded-xl text-xs font-bold border border-indigo-500/30 transition">সব মাল দেখুন</button>
                 </div>
 
-                <div class="max-h-[460px] overflow-y-auto border border-white/10 rounded-xl bg-black/20">
+                <div class="max-h-[420px] overflow-y-auto border border-white/10 rounded-xl bg-black/20">
                     <table class="w-full text-left text-sm text-gray-300">
-                        <thead class="sticky top-0 bg-slate-900 backdrop-blur text-gray-200 font-semibold border-b border-white/10">
+                        <thead class="sticky top-0 bg-slate-900 text-gray-200 font-semibold border-b border-white/10">
                             <tr>
                                 <th class="p-3 text-center w-12">বাছাই</th>
                                 <th class="p-3">মালের নাম</th>
@@ -129,91 +106,130 @@
                             </tr>
                         </thead>
                         <tbody id="product-list-tbody" class="divide-y divide-white/5">
-                            </tbody>
+                            <tr><td colspan="6" class="p-8 text-center text-gray-500 font-medium">উপরের বক্সে মালের নাম টাইপ করুন অথবা "সব মাল দেখুন" বোতামে ক্লিক করুন।</td></tr>
+                        </tbody>
                     </table>
                 </div>
             </div>
 
             <div class="lg:col-span-4 flex flex-col gap-6">
-                <div class="glass-panel p-6 rounded-2xl shadow-xl border border-white/10 flex-1 flex flex-col justify-between">
+                <div class="glass-panel p-5 rounded-2xl border border-white/10 shadow-xl flex-1 flex flex-col justify-between">
                     <div>
-                        <h3 class="text-md font-bold text-indigo-300 mb-3 border-b border-white/5 pb-2">নতুন মেমো তৈরি</h3>
-                        <div class="mb-4">
-                            <label class="block text-xs font-medium text-gray-400 mb-1">কাস্টমারের নাম (ঐচ্ছিক):</label>
-                            <input type="text" id="cust-name" class="w-full bg-white/5 border border-white/10 rounded-xl px-3 py-2 text-white text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                        <h3 class="text-md font-bold text-indigo-300 mb-3 border-b border-white/5 pb-2">নতুন মেমো (ক্যাশ/বাকি)</h3>
+                        <div class="space-y-3">
+                            <div>
+                                <label class="block text-xs text-gray-400 mb-1">কাস্টমারের নাম:</label>
+                                <input type="text" id="cust-name" class="w-full bg-white/5 border border-white/10 rounded-xl px-3 py-1.5 text-white text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                            </div>
+                            <div>
+                                <label class="block text-xs text-gray-400 mb-1">মোবাইল নম্বর (বাকি দিলে অবশ্যই লাগবে):</label>
+                                <input type="number" id="cust-phone" class="w-full bg-white/5 border border-white/10 rounded-xl px-3 py-1.5 text-white text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500" placeholder="017XXXXXXXX">
+                            </div>
+                            <div>
+                                <label class="block text-xs text-gray-400 mb-1">নগদ জমা বা ক্যাশ আদায় (টাকা):</label>
+                                <input type="number" id="cust-paid" class="w-full bg-white/5 border border-white/10 rounded-xl px-3 py-1.5 text-white text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500" placeholder="সব ক্যাশ দিলে ফাঁকা রাখুন">
+                            </div>
                         </div>
                     </div>
-                    <button onclick="processSale()" class="w-full bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white py-3 rounded-xl font-bold text-md shadow-lg shadow-emerald-600/20 transition duration-200 mt-4">
+                    <button onclick="processSale()" class="w-full bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white py-3 rounded-xl font-bold text-md shadow-lg transition mt-4">
                         বিক্রি সম্পন্ন ও প্রিন্ট করুন
                     </button>
                 </div>
 
-                <div class="glass-panel p-5 rounded-2xl shadow-xl border border-white/10">
-                    <h3 class="text-sm font-bold text-purple-300 mb-2.5 flex items-center gap-2">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-                        </svg>
-                        পুরাতন রসিদ নম্বর দিয়ে খুঁজুন
+                <div class="glass-panel p-5 rounded-2xl border border-white/10 shadow-xl">
+                    <h3 class="text-sm font-bold text-purple-300 mb-2 flex items-center gap-2">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" /></svg>
+                        মেমো খতিয়ান অনুসন্ধান
                     </h3>
+                    <p class="text-[11px] text-gray-400 mb-2">নাম, মোবাইল, তারিখ (যেমন: ৭/৬/২০২৬) বা রসিদ নং লিখুন</p>
                     <div class="flex gap-2">
-                        <input type="number" id="search-invoice-input" class="flex-1 bg-white/5 border border-white/10 rounded-xl px-3 py-2 text-white text-sm focus:outline-none focus:ring-2 focus:ring-purple-500 placeholder-white/20" placeholder="যেমন: 456107">
-                        <button onclick="searchInvoice()" class="bg-purple-600 hover:bg-purple-500 text-white px-4 py-2 rounded-xl text-sm font-bold transition">খুঁজুন</button>
+                        <input type="text" id="search-invoice-input" class="flex-1 bg-white/5 border border-white/10 rounded-xl px-3 py-2 text-white text-sm focus:outline-none focus:ring-2 focus:ring-purple-500" placeholder="খুঁজুন...">
+                        <button onclick="searchInvoiceAdvanced()" class="bg-purple-600 hover:bg-purple-500 text-white px-4 py-2 rounded-xl text-sm font-bold transition">খুঁজুন</button>
                     </div>
+                    <div id="search-results-box" class="mt-3 max-h-40 overflow-y-auto space-y-2 hidden">
+                        </div>
                 </div>
             </div>
         </div>
 
-        <div id="page-upload" class="max-w-xl mx-auto glass-panel p-6 rounded-2xl shadow-xl border border-white/10 hidden">
-            <div class="flex items-center gap-3 mb-5 border-b border-white/10 pb-3">
-                <div class="p-2 bg-blue-500/10 text-blue-400 rounded-lg border border-blue-500/20">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
-                    </svg>
-                </div>
-                <h2 class="text-xl font-bold text-white">নতুন মাল গুদামে তুলুন</h2>
+        <div id="page-due" class="max-w-2xl mx-auto glass-panel p-6 rounded-2xl border border-white/10 shadow-xl hidden">
+            <div class="flex items-center gap-2 mb-4 border-b border-white/10 pb-3">
+                <h2 class="text-xl font-bold text-amber-400">কাস্টমার বাকি ও জমা খাতা (Ledger)</h2>
             </div>
             
+            <div class="bg-black/20 p-4 rounded-xl border border-white/5 mb-6">
+                <label class="block text-sm font-medium text-gray-300 mb-1.5">কাস্টমারের নাম বা মোবাইল নম্বর দিয়ে সার্চ দিন:</label>
+                <div class="flex gap-2">
+                    <input type="text" id="due-search-key" class="flex-1 bg-white/5 border border-white/10 rounded-xl px-4 py-2 text-white focus:outline-none focus:ring-2 focus:ring-amber-500" placeholder="যেমন: কাস্টমারের নাম বা ফোন...">
+                    <button onclick="searchCustomerDue()" class="bg-amber-600 hover:bg-amber-500 text-white px-5 py-2 rounded-xl font-bold transition">হিসাব দেখুন</button>
+                </div>
+            </div>
+
+            <div id="due-profile-card" class="hidden space-y-6">
+                <div class="grid grid-cols-2 gap-4 bg-white/5 p-4 rounded-xl border border-white/10 text-center">
+                    <div>
+                        <span class="text-xs text-gray-400 block">ক্রেতার নাম ও মোবাইল</span>
+                        <span id="due-card-name" class="text-base font-bold text-white block mt-0.5">-</span>
+                    </div>
+                    <div>
+                        <span class="text-xs text-gray-400 block">বর্তমান মোট বাকি</span>
+                        <span id="due-card-balance" class="text-2xl font-black text-rose-400 block mt-0.5">৳0</span>
+                    </div>
+                </div>
+
+                <div class="bg-emerald-600/10 border border-emerald-500/20 p-4 rounded-xl">
+                    <h3 class="text-sm font-bold text-emerald-400 mb-3">টাকা জমা বা বাকি উশুল এন্ট্রি</h3>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 items-end">
+                        <div>
+                            <label class="block text-xs text-gray-300 mb-1">জমা টাকার পরিমাণ (৳):</label>
+                            <input type="number" id="collection-amount" class="w-full bg-black/30 border border-white/10 rounded-xl px-3 py-2 text-white font-bold focus:ring-2 focus:ring-emerald-500 focus:outline-none">
+                        </div>
+                        <button onclick="submitDueCollection()" class="w-full bg-emerald-600 hover:bg-emerald-500 text-white py-2 rounded-xl font-bold shadow-lg transition">টাকা জমা করুন</button>
+                    </div>
+                </div>
+            </div>
+            <p id="due-search-error" class="text-center text-gray-500 py-6">কোনো কাস্টমার সার্চ করা হয়নি।</p>
+        </div>
+
+        <div id="page-upload" class="max-w-xl mx-auto glass-panel p-6 rounded-2xl border border-white/10 shadow-xl hidden">
+            <div class="flex items-center gap-3 mb-5 border-b border-white/10 pb-3">
+                <h2 class="text-xl font-bold text-white">নতুন মাল গুদামে তুলুন</h2>
+            </div>
             <div class="space-y-4">
                 <div>
                     <label class="block text-sm font-medium text-gray-300 mb-1">মালামালের নাম:</label>
-                    <input type="text" id="prod-name" class="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-2.5 text-white focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                    <input type="text" id="prod-name" class="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-2 text-white focus:outline-none focus:ring-2 focus:ring-indigo-500">
                 </div>
                 <div class="grid grid-cols-2 gap-4">
                     <div>
                         <label class="block text-sm font-medium text-gray-300 mb-1">সাইজ:</label>
-                        <input type="text" id="prod-size" class="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-2.5 text-white focus:outline-none focus:ring-2 focus:ring-indigo-500" placeholder="যেমন: 1/2, 3/4, 1">
+                        <input type="text" id="prod-size" class="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-2 text-white focus:outline-none focus:ring-2 focus:ring-indigo-500" placeholder="যেমন: 1/2, 3/4">
                     </div>
                     <div>
                         <label class="block text-sm font-medium text-gray-300 mb-1">পরিমাণ (পিস):</label>
-                        <input type="number" id="prod-qty" class="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-2.5 text-white focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                        <input type="number" id="prod-qty" class="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-2 text-white focus:outline-none focus:ring-2 focus:ring-indigo-500">
                     </div>
                 </div>
                 <div>
                     <label class="block text-sm font-medium text-gray-300 mb-1">বিক্রয় মূল্য (প্রতি পিস):</label>
-                    <input type="number" id="prod-price" class="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-2.5 text-white focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                    <input type="number" id="prod-price" class="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-2 text-white focus:outline-none focus:ring-2 focus:ring-indigo-500">
                 </div>
-                
                 <div class="glass-card p-4 rounded-xl flex items-start gap-3 mt-2">
                     <input type="checkbox" id="prod-non-inv" class="mt-1 w-4 h-4 text-indigo-600 bg-white/10 border-white/20 rounded focus:ring-indigo-500">
                     <label for="prod-non-inv" class="text-sm text-gray-300 select-none cursor-pointer">
                         <span class="font-semibold text-amber-400 block mb-0.5">নন-ইনভেন্টরি আইটেম</span>
-                        এটি টিক দিলে বিক্রির সময় মালের স্টক কমবে না (যেমন লেবার বা ক্যারিং খরচ)।
+                        এটি টিক দিলে বিক্রির সময় মালের স্টক কমবে না (যেমন লেবার বা গাড়ি ভাড়া)।
                     </label>
                 </div>
             </div>
-            
-            <button onclick="uploadProduct()" class="w-full mt-6 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white py-3 rounded-xl font-bold shadow-lg shadow-indigo-600/20 transition duration-200">
-                সফটওয়্যারে আপলোড সম্পন্ন করুন
-            </button>
+            <button onclick="uploadProduct()" class="w-full mt-6 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white py-3 rounded-xl font-bold shadow-lg transition">সফটওয়্যারে আপলোড সম্পন্ন করুন</button>
         </div>
 
     </div>
 
     <div id="invoice-print-area" class="hidden bg-white text-black p-6 max-w-md mx-auto border border-gray-400 shadow-md font-sans">
         <div class="text-center mb-5 border-b-2 border-gray-800 pb-3">
-            <h1 class="text-2xl font-black tracking-tight text-gray-900 leading-none mb-1">
-                M/S AL-WASEE HARDWARE AND SANITARY
-            </h1>
+            <h1 class="text-2xl font-black tracking-tight text-gray-900 leading-none mb-1">M/S AL-WASEE HARDWARE AND SANITARY</h1>
             <p class="text-[11px] font-bold text-gray-600">সব ধরণের হার্ডওয়্যার ও স্যানিটারি সামগ্রী বিক্রেতা</p>
             <div class="flex justify-between items-center mt-4 text-xs font-semibold text-gray-600">
                 <span>তারিখ: <span id="inv-date" class="text-black"></span></span>
@@ -221,11 +237,12 @@
             </div>
         </div>
         
-        <div class="mb-3 text-xs bg-gray-100 p-2 rounded">
+        <div class="mb-3 text-xs bg-gray-100 p-2 rounded space-y-0.5">
             <p class="text-gray-700"><strong>ক্রেতার নাম:</strong> <span id="inv-cust-name" class="text-gray-900 font-bold ml-1"></span></p>
+            <p class="text-gray-700"><strong>মোবাইল নং:</strong> <span id="inv-cust-phone" class="text-gray-900 font-bold ml-1"></span></p>
         </div>
         
-        <table class="w-full text-left text-xs mb-4">
+        <table class="w-full text-left text-xs mb-3">
             <thead>
                 <tr class="border-b-2 border-gray-400 bg-gray-200 text-gray-800 font-bold">
                     <th class="py-1.5 px-1">আইটেম বিবরণ (সাইজ)</th>
@@ -233,13 +250,13 @@
                     <th class="py-1.5 px-1 text-right">মূল্য</th>
                 </tr>
             </thead>
-            <tbody id="invoice-items-tbody" class="divide-y divide-gray-300">
-                </tbody>
+            <tbody id="invoice-items-tbody" class="divide-y divide-gray-300"></tbody>
         </table>
         
-        <div class="flex justify-between items-center font-black text-base border-t-2 border-gray-800 pt-2 px-1">
-            <span>সর্বমোট বিল:</span>
-            <span>৳<span id="inv-total">0</span></span>
+        <div class="text-xs space-y-1 text-right border-t-2 border-gray-800 pt-2 font-semibold">
+            <div class="flex justify-between"><span>মোট বিল:</span> ৳<span id="inv-total">0</span></div>
+            <div class="flex justify-between text-emerald-700"><span>নগদ জমা:</span> ৳<span id="inv-paid">0</span></div>
+            <div class="flex justify-between text-rose-600 font-bold border-t border-gray-200 pt-0.5"><span>বাকি বা বকেয়া:</span> ৳<span id="inv-due">0</span></div>
         </div>
         
         <div class="text-center mt-6 pt-3 border-t border-dashed border-gray-400 text-[10px] text-gray-500 font-medium">
@@ -258,9 +275,12 @@
             appId: "1:137085905024:web:b0ba77c755eb9239a35e65"
         };
 
-        // ফায়ারবেস ইনিশিয়ালাইজেশন
         firebase.initializeApp(firebaseConfig);
         const db = firebase.firestore();
+
+        let localProductsArray = []; 
+        let isShowAllActive = false;
+        let activeDueCustomerDocId = null; // বর্তমান বাকি উশুলের সিলেক্টেড কাস্টমার আইডি
 
         // === পাসওয়ার্ড চেক ===
         function checkPassword() {
@@ -268,7 +288,7 @@
             if (enteredPassword === '2580') {
                 document.getElementById('login-screen').classList.add('hidden');
                 document.getElementById('main-app').classList.remove('hidden');
-                loadProducts(); 
+                fetchProductsFromServer(); 
             } else {
                 document.getElementById('login-error').classList.remove('hidden');
             }
@@ -278,25 +298,18 @@
             if (e.key === 'Enter') checkPassword();
         });
 
-        // === পেজ ট্যাব স্যুইচিং লজিক ===
+        // === থ্রি-ট্যাব স্যুইচিং লজিক ===
         function switchTab(tabName) {
-            const billingPage = document.getElementById('page-billing');
-            const uploadPage = document.getElementById('page-upload');
-            const billingBtn = document.getElementById('tab-billing-btn');
-            const uploadBtn = document.getElementById('tab-upload-btn');
+            const tabs = ['billing', 'due', 'upload'];
+            tabs.forEach(t => {
+                document.getElementById(`page-${t}`).classList.add('hidden');
+                document.getElementById(`tab-${t}-btn`).className = "px-4 py-2 rounded-lg font-bold text-sm transition text-gray-400 hover:text-white";
+            });
 
-            if(tabName === 'billing') {
-                billingPage.classList.remove('hidden');
-                uploadPage.classList.add('hidden');
-                billingBtn.className = "px-5 py-2 rounded-lg font-bold text-sm transition duration-150 bg-indigo-600 text-white shadow";
-                uploadBtn.className = "px-5 py-2 rounded-lg font-bold text-sm transition duration-150 text-gray-400 hover:text-white";
-                loadProducts();
-            } else {
-                billingPage.classList.add('hidden');
-                uploadPage.classList.remove('hidden');
-                uploadBtn.className = "px-5 py-2 rounded-lg font-bold text-sm transition duration-150 bg-indigo-600 text-white shadow";
-                billingBtn.className = "px-5 py-2 rounded-lg font-bold text-sm transition duration-150 text-gray-400 hover:text-white";
-            }
+            document.getElementById(`page-${tabName}`).classList.remove('hidden');
+            document.getElementById(`tab-${tabName}-btn`).className = "px-4 py-2 rounded-lg font-bold text-sm transition bg-indigo-600 text-white shadow";
+
+            if(tabName === 'billing') fetchProductsFromServer();
         }
 
         // === নতুন মাল আপলোড করা ===
@@ -307,101 +320,104 @@
             const price = parseFloat(document.getElementById('prod-price').value);
             const isNonInventory = document.getElementById('prod-non-inv').checked;
 
-            if(!name || !size || isNaN(qty) || isNaN(price)) {
-                alert("দয়া করে সব ঘর সঠিকভাবে পূরণ করুন।");
-                return;
-            }
+            if(!name || !size || isNaN(qty) || isNaN(price)) { alert("দয়া করে সব ঘর পূরণ করুন।"); return; }
 
             db.collection("products").add({
-                name: name,
-                size: size,
-                qty: qty,
-                price: price,
-                isNonInventory: isNonInventory,
-                timestamp: firebase.firestore.FieldValue.serverTimestamp()
-            })
-            .then(() => {
+                name: name, size: size, qty: qty, price: price, isNonInventory: isNonInventory, timestamp: firebase.firestore.FieldValue.serverTimestamp()
+            }).then(() => {
                 alert("মাল সফলভাবে ইনভেন্টরিতে আপলোড হয়েছে!");
                 document.getElementById('prod-name').value = '';
                 document.getElementById('prod-size').value = '';
                 document.getElementById('prod-qty').value = '';
                 document.getElementById('prod-price').value = '';
                 document.getElementById('prod-non-inv').checked = false;
-            })
-            .catch((err) => console.error(err));
+            }).catch((err) => console.error(err));
         }
 
-        // === স্টক তালিকা লোড করা ===
-        function loadProducts() {
+        // === ইনভেন্টরি স্টক ডাটা আনা ===
+        function fetchProductsFromServer() {
             db.collection("products").orderBy("timestamp", "desc").get().then((querySnapshot) => {
-                const tbody = document.getElementById('product-list-tbody');
-                tbody.innerHTML = '';
-                
+                localProductsArray = [];
                 querySnapshot.forEach((doc) => {
-                    const product = doc.data();
-                    const row = document.createElement('tr');
-                    row.className = "hover:bg-white/5 transition-colors duration-150 cursor-pointer";
-                    
-                    let stockDisplay = "";
-                    if (product.isNonInventory) {
-                        stockDisplay = `<span class="text-xs bg-amber-500/10 text-amber-400 px-2 py-0.5 rounded-full border border-amber-500/20 font-medium">Non-Inv</span>`;
-                    } else if (product.qty <= 3) {
-                        stockDisplay = `<span class="font-bold text-rose-400 bg-rose-500/20 px-2 py-0.5 rounded border border-rose-500/30">${product.qty} পিস</span>`;
-                    } else {
-                        stockDisplay = `<span class="font-bold text-gray-200">${product.qty}</span>`;
-                    }
-
-                    row.innerHTML = `
-                        <td class="p-3 text-center" onclick="event.stopPropagation();">
-                            <input type="checkbox" class="sale-checkbox w-4 h-4 text-emerald-600 bg-white/10 border-white/20 rounded focus:ring-emerald-500" data-id="${doc.id}" data-name="${product.name}" data-size="${product.size}" data-price="${product.price}" data-qty="${product.qty}" data-noninv="${product.isNonInventory}" onchange="toggleQtyInput(this)">
-                        </td>
-                        <td class="p-3 font-semibold text-white">${product.name}</td>
-                        <td class="p-3 text-gray-400 font-medium">${product.size}</td>
-                        <td class="p-3 text-center">${stockDisplay}</td>
-                        <td class="p-3 text-right font-bold text-emerald-400">৳${product.price}</td>
-                        <td class="p-2 text-center" onclick="event.stopPropagation();">
-                            <input type="number" class="sale-qty-input w-20 bg-slate-800 border border-white/10 rounded px-2 py-1 text-center text-white text-sm focus:outline-none" value="1" min="1" disabled id="qty-input-${doc.id}">
-                        </td>
-                    `;
-                    
-                    row.addEventListener('click', () => {
-                        const cb = row.querySelector('.sale-checkbox');
-                        cb.checked = !cb.checked;
-                        toggleQtyInput(cb);
-                    });
-                    tbody.appendChild(row);
+                    const data = doc.data(); data.id = doc.id;
+                    localProductsArray.push(data);
                 });
-            }).catch((err) => console.error(err));
+                if (isShowAllActive) renderProductTable(localProductsArray); else filterProductsLive();
+            });
+        }
+
+        // === লাইভ প্রোডাক্ট সার্চ ফিল্টার ===
+        function filterProductsLive() {
+            const searchKey = document.getElementById('search-product-input').value.toLowerCase().trim();
+            if (searchKey === "") {
+                if (isShowAllActive) renderProductTable(localProductsArray);
+                else document.getElementById('product-list-tbody').innerHTML = `<tr><td colspan="6" class="p-8 text-center text-gray-500 font-medium">উপরের বক্সে মালের নাম টাইপ করুন অথবা "সব মাল দেখুন" বোতামে ক্লিক করুন।</td></tr>`;
+                return;
+            }
+            const filtered = localProductsArray.filter(prod => prod.name.toLowerCase().includes(searchKey) || prod.size.toLowerCase().includes(searchKey));
+            renderProductTable(filtered);
+        }
+
+        function toggleShowAllProducts() {
+            const btn = document.getElementById('toggle-show-all-btn');
+            if (!isShowAllActive) {
+                isShowAllActive = true; btn.innerText = "তালিকা লুকান";
+                renderProductTable(localProductsArray);
+            } else {
+                isShowAllActive = false; btn.innerText = "সব মাল দেখুন";
+                document.getElementById('search-product-input').value = "";
+                filterProductsLive();
+            }
+        }
+
+        function renderProductTable(productsList) {
+            const tbody = document.getElementById('product-list-tbody'); tbody.innerHTML = '';
+            if (productsList.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="6" class="p-8 text-center text-rose-400 font-medium">দুঃখিত, কোনো মাল খুঁজে পাওয়া যায়নি!</td></tr>`; return;
+            }
+            productsList.forEach((product) => {
+                const row = document.createElement('tr');
+                row.className = "hover:bg-white/5 transition duration-150 cursor-pointer";
+                let stockDisplay = product.isNonInventory ? `<span class="text-xs bg-amber-500/10 text-amber-400 px-2 py-0.5 rounded-full border border-amber-500/20">Non-Inv</span>` : (product.qty <= 3 ? `<span class="font-bold text-rose-400 bg-rose-500/20 px-2 py-0.5 rounded">${product.qty} পিস</span>` : `<span class="font-bold text-gray-200">${product.qty}</span>`);
+                
+                row.innerHTML = `
+                    <td class="p-3 text-center" onclick="event.stopPropagation();"><input type="checkbox" class="sale-checkbox w-4 h-4 text-emerald-600 bg-white/10 border-white/20 rounded" data-id="${product.id}" data-name="${product.name}" data-size="${product.size}" data-price="${product.price}" data-qty="${product.qty}" data-noninv="${product.isNonInventory}" onchange="toggleQtyInput(this)"></td>
+                    <td class="p-3 font-semibold text-white">${product.name}</td>
+                    <td class="p-3 text-gray-400 font-medium">${product.size}</td>
+                    <td class="p-3 text-center">${stockDisplay}</td>
+                    <td class="p-3 text-right font-bold text-emerald-400">৳${product.price}</td>
+                    <td class="p-2 text-center" onclick="event.stopPropagation();"><input type="number" class="sale-qty-input w-20 bg-slate-800 border border-white/10 rounded px-2 py-1 text-center text-white text-sm" value="1" min="1" disabled id="qty-input-${product.id}"></td>
+                `;
+                row.addEventListener('click', () => { const cb = row.querySelector('.sale-checkbox'); cb.checked = !cb.checked; toggleQtyInput(cb); });
+                tbody.appendChild(row);
+            });
         }
 
         function toggleQtyInput(checkbox) {
             const docId = checkbox.getAttribute('data-id');
             const qtyInput = document.getElementById(`qty-input-${docId}`);
             if (checkbox.checked) {
-                qtyInput.disabled = false;
-                qtyInput.className = "sale-qty-input w-20 bg-slate-900 text-white text-center text-sm border border-emerald-500 rounded px-2 py-1";
+                qtyInput.disabled = false; qtyInput.className = "sale-qty-input w-20 bg-slate-900 text-white text-center border border-emerald-500 rounded px-2 py-1";
             } else {
-                qtyInput.disabled = true;
-                qtyInput.value = "1";
-                qtyInput.className = "sale-qty-input w-20 bg-slate-800 text-gray-400 text-center text-sm border border-white/10 rounded px-2 py-1";
+                qtyInput.disabled = true; qtyInput.value = "1"; qtyInput.className = "sale-qty-input w-20 bg-slate-800 text-gray-400 text-center border border-white/10 rounded px-2 py-1";
             }
         }
 
-        // === বিক্রি সম্পন্ন করা এবং সেলস হিস্ট্রি সেভ করা ===
+        // === মাল বিক্রি সম্পন্ন করা ও স্বয়ংক্রিয় বাকি হিসাব করা ===
         function processSale() {
             const checkboxes = document.querySelectorAll('.sale-checkbox:checked');
-            if (checkboxes.length === 0) {
-                alert("বিক্রি করার জন্য প্রথমে তালিকা থেকে মাল টিক দিন।");
-                return;
-            }
+            if (checkboxes.length === 0) { alert("বিক্রি করার জন্য প্রথমে তালিকা থেকে মাল টিক দিন।"); return; }
 
             const batch = db.batch();
             let totalAmount = 0;
             const invoiceItems = [];
             let stockError = false;
+            
             const generatedInvoiceNum = Math.floor(100000 + Math.random() * 900000);
             const customerName = document.getElementById('cust-name').value.trim() || "সাধারণ ক্রেতা";
-            const currentDateStr = new Date().toLocaleDateString('bn-BD', { year: 'numeric', month: 'long', day: 'numeric' });
+            const customerPhone = document.getElementById('cust-phone').value.trim();
+            const cashPaidInput = parseFloat(document.getElementById('cust-paid').value);
+            const cashPaid = isNaN(cashPaidInput) ? null : cashPaidInput;
 
             checkboxes.forEach((cb) => {
                 const docId = cb.getAttribute('data-id');
@@ -417,84 +433,163 @@
 
                 if (!isNonInventory) {
                     if (currentQty >= sellQty) {
-                        const docRef = db.collection("products").doc(docId);
-                        batch.update(docRef, { qty: currentQty - sellQty });
-                    } else {
-                        alert(`দুঃখিত, ${name} পর্যাপ্ত স্টক নেই! স্টকে আছে ${currentQty} পিস।`);
-                        stockError = true;
-                    }
+                        batch.update(db.collection("products").doc(docId), { qty: currentQty - sellQty });
+                    } else { alert(`দুঃখিত, ${name} পর্যাপ্ত স্টক নেই!`); stockError = true; }
                 }
             });
 
             if (stockError) return;
 
-            // ফায়ারবেসে সম্পূর্ণ ইনভয়েসের ডাটা আজীবনের জন্য সেভ করা হচ্ছে
-            const saleRef = db.collection("sales").doc(generatedInvoiceNum.toString());
-            batch.set(saleRef, {
-                invoiceNum: generatedInvoiceNum,
-                customerName: customerName,
-                date: currentDateStr,
-                items: invoiceItems,
-                total: totalAmount,
-                timestamp: firebase.firestore.FieldValue.serverTimestamp()
-            });
+            // বাকি হিসাব করা
+            let finalPaid = cashPaid === null ? totalAmount : cashPaid;
+            let dueAmount = totalAmount - finalPaid;
 
-            batch.commit().then(() => {
-                renderAndPrintInvoice({ customerName, date: currentDateStr, invoiceNum: generatedInvoiceNum, items: invoiceItems, total: totalAmount });
-                loadProducts();
-            }).catch((err) => alert("স্টক সেভ করতে ব্যর্থ হয়েছে।"));
-        }
-
-        // === ফায়ারবেস আর্কাইভ থেকে পুরাতন রসিদ সার্চ করা ===
-        function searchInvoice() {
-            const searchInput = document.getElementById('search-invoice-input').value.trim();
-            if(!searchInput) {
-                alert("অনুগ্রহ করে একটি রসিদ নম্বর লিখুন।");
+            if (dueAmount > 0 && !customerPhone) {
+                alert("বিলটিতে বাকি রয়েছে! বাকি হিসাব রাখতে হলে অবশ্যই ক্রেতার মোবাইল নম্বর দিতে হবে।");
                 return;
             }
 
-            db.collection("sales").doc(searchInput).get().then((doc) => {
-                if (doc.exists) {
-                    const invoiceData = doc.data();
-                    alert(`রসিদ নম্বর #${searchInput} পাওয়া গেছে! ক্রেতা: ${invoiceData.customerName}। এখন মেমোটি পুনরায় ওপেন হচ্ছে।`);
-                    renderAndPrintInvoice(invoiceData);
-                } else {
-                    alert(`দুঃখিত, #${searchInput} নম্বরের কোনো রসিদ সিস্টেমে খুঁজে পাওয়া যায়নি। নম্বরটি আবার চেক করুন।`);
-                }
-            }).catch((err) => console.error(err));
+            // ১. মেমোর পুরো বিবরণ বিক্রির তালিকায় সেভ
+            const currentDateStr = new Date().toLocaleDateString('bn-BD', { year: 'numeric', month: 'long', day: 'numeric' });
+            batch.set(db.collection("sales").doc(generatedInvoiceNum.toString()), {
+                invoiceNum: generatedInvoiceNum, customerName, customerPhone, date: currentDateStr, items: invoiceItems, total: totalAmount, paid: finalPaid, due: dueAmount, timestamp: firebase.firestore.FieldValue.serverTimestamp()
+            });
+
+            // ২. কাস্টমারের মোবাইল নম্বর অনুযায়ী বাকি খাতায় অটোমেটিক যোগ বা আপডেট করা
+            if (dueAmount > 0 && customerPhone) {
+                const dueRef = db.collection("customer_dues").doc(customerPhone);
+                batch.set(dueRef, {
+                    name: customerName, phone: customerPhone, totalDue: firebase.firestore.FieldValue.increment(dueAmount), lastUpdated: firebase.firestore.FieldValue.serverTimestamp()
+                }, { merge: true });
+            }
+
+            batch.commit().then(() => {
+                renderAndPrintInvoice({ customerName, customerPhone, date: currentDateStr, invoiceNum: generatedInvoiceNum, items: invoiceItems, total: totalAmount, paid: finalPaid, due: dueAmount });
+                fetchProductsFromServer();
+            }).catch((err) => alert("স্টক বা বাকি রেকর্ড করতে সমস্যা হয়েছে।"));
         }
 
-        // === ইনভয়েস প্রিন্টিং রেন্ডারার ===
+        // === অ্যাডভান্সড মেমো সার্চ (নাম, ফোন, তারিখ বা রসিদ নং দিয়ে) ===
+        function searchInvoiceAdvanced() {
+            const searchInput = document.getElementById('search-invoice-input').value.trim().toLowerCase();
+            const resultsBox = document.getElementById('search-results-box');
+            if(!searchInput) { alert("অনুগ্রহ করে কিছু লিখুন।"); return; }
+
+            resultsBox.innerHTML = '<p class="text-xs text-gray-400">খোঁজা হচ্ছে...</p>';
+            resultsBox.classList.remove('hidden');
+
+            db.collection("sales").get().then((querySnapshot) => {
+                resultsBox.innerHTML = '';
+                let foundCount = 0;
+
+                querySnapshot.forEach((doc) => {
+                    const data = doc.data();
+                    const invNumStr = data.invoiceNum ? data.invoiceNum.toString() : '';
+                    const custNameStr = data.customerName ? data.customerName.toLowerCase() : '';
+                    const custPhoneStr = data.customerPhone ? data.customerPhone : '';
+                    const dateStr = data.date ? data.date : '';
+
+                    // যেকোনো একটির সাথে ম্যাচ করলেই চলে আসবে
+                    if (invNumStr.includes(searchInput) || custNameStr.includes(searchInput) || custPhoneStr.includes(searchInput) || dateStr.includes(searchInput)) {
+                        foundCount++;
+                        const itemBtn = document.createElement('button');
+                        itemBtn.className = "w-full text-left p-2 rounded-lg bg-white/5 border border-white/10 hover:bg-indigo-600/30 text-xs transition flex justify-between items-center";
+                        itemBtn.innerHTML = `<div><p class="font-bold text-white">#${data.invoiceNum} - ${data.customerName}</p><p class="text-[10px] text-gray-400">${data.date}</p></div><span class="text-emerald-400 font-bold">৳${data.total}</span>`;
+                        itemBtn.onclick = () => renderAndPrintInvoice(data);
+                        resultsBox.appendChild(itemBtn);
+                    }
+                });
+
+                if (foundCount === 0) resultsBox.innerHTML = '<p class="text-xs text-rose-400 p-1">দুঃখিত, কোনো মেমো পাওয়া যায়নি!</p>';
+            });
+        }
+
+        // === বাকি খাতা পাতা: কাস্টমার সার্চ করা ===
+        function searchCustomerDue() {
+            const searchKey = document.getElementById('due-search-key').value.trim().toLowerCase();
+            const profileCard = document.getElementById('due-profile-card');
+            const errorText = document.getElementById('due-search-error');
+            
+            if(!searchKey) { alert("নাম বা মোবাইল নম্বর টাইপ করুন।"); return; }
+
+            profileCard.classList.add('hidden');
+            errorText.innerText = "খোঁজা হচ্ছে...";
+
+            db.collection("customer_dues").get().then((querySnapshot) => {
+                let foundDoc = null;
+                querySnapshot.forEach((doc) => {
+                    const data = doc.data();
+                    if(data.phone.includes(searchKey) || data.name.toLowerCase().includes(searchKey)) {
+                        foundDoc = data; foundDoc.id = doc.id;
+                    }
+                });
+
+                if(foundDoc) {
+                    activeDueCustomerDocId = foundDoc.id;
+                    document.getElementById('due-card-name').innerText = `${foundDoc.name} (${foundDoc.phone})`;
+                    document.getElementById('due-card-balance').innerText = `৳${foundDoc.totalDue}`;
+                    profileCard.classList.remove('hidden');
+                    errorText.classList.add('hidden');
+                } else {
+                    activeDueCustomerDocId = null;
+                    errorText.innerText = "দুঃখিত, এই নামে বা নম্বরে কোনো বাকির হিসাব খুঁজে পাওয়া যায়নি।";
+                }
+            });
+        }
+
+        // === কাস্টমারের বকেয়া টাকা জমা নেওয়া (কালেকশন) ===
+        function submitDueCollection() {
+            const amountInput = parseFloat(document.getElementById('collection-amount').value);
+            if(!activeDueCustomerDocId || isNaN(amountInput) || amountInput <= 0) { alert("দয়া করে সঠিক জমার পরিমাণ লিখুন।"); return; }
+
+            const customerRef = db.collection("customer_dues").doc(activeDueCustomerDocId);
+            
+            db.runTransaction((transaction) => {
+                return transaction.get(customerRef).then((sfDoc) => {
+                    if (!sfDoc.exists) { throw "কাস্টমার রেকর্ড পাওয়া যায়নি!"; }
+                    let currentDue = sfDoc.data().totalDue || 0;
+                    if(amountInput > currentDue) { alert("বাকি টাকার চেয়ে বেশি টাকা জমা নেওয়া যাবে না!"); return; }
+                    
+                    let newDue = currentDue - amountInput;
+                    transaction.update(customerRef, { totalDue: newDue, lastUpdated: firebase.firestore.FieldValue.serverTimestamp() });
+                    return newDue;
+                });
+            }).then((newDue) => {
+                alert(`সাফল্যের সাথে ৳${amountInput} জমা নেওয়া হয়েছে! বর্তমান বকেয়া বাকি: ৳${newDue}`);
+                document.getElementById('collection-amount').value = '';
+                document.getElementById('due-card-balance').innerText = `৳${newDue}`;
+            }).catch((err) => alert("টাকা জমা করতে সমস্যা হয়েছে।"));
+        }
+
+        // === ইনভয়েস প্রিন্ট লেআউট রেন্ডারার ===
         function renderAndPrintInvoice(data) {
             document.getElementById('inv-cust-name').innerText = data.customerName;
+            document.getElementById('inv-cust-phone').innerText = data.customerPhone || "নাই";
             document.getElementById('inv-date').innerText = data.date;
             document.getElementById('inv-num').innerText = data.invoiceNum;
             document.getElementById('inv-total').innerText = data.total;
+            document.getElementById('inv-paid').innerText = data.paid;
+            document.getElementById('inv-due').innerText = data.due;
 
-            const invTbody = document.getElementById('invoice-items-tbody');
-            invTbody.innerHTML = '';
-
+            const invTbody = document.getElementById('invoice-items-tbody'); invTbody.innerHTML = '';
             data.items.forEach((item) => {
-                const row = document.createElement('tr');
-                row.className = "text-gray-900";
-                row.innerHTML = `
-                    <td class="py-1.5 px-1 font-medium">${item.name} <span class="text-[10px] text-gray-500 font-normal">(${item.size})</span></td>
-                    <td class="py-1.5 px-1 text-center font-semibold">${item.sellQty} পিস</td>
-                    <td class="py-1.5 px-1 text-right font-semibold">৳${item.price * item.sellQty}</td>
-                `;
+                const row = document.createElement('tr'); row.className = "text-gray-900";
+                row.innerHTML = `<td class="py-1.5 px-1 font-medium">${item.name} <span class="text-[10px] text-gray-500">(${item.size})</span></td><td class="py-1.5 px-1 text-center font-semibold">${item.sellQty} পিস</td><td class="py-1.5 px-1 text-right font-semibold">৳${item.price * item.sellQty}</td>`;
                 invTbody.appendChild(row);
             });
 
             document.getElementById('main-app').classList.add('hidden');
             document.getElementById('invoice-print-area').classList.remove('hidden');
-
             window.print();
 
             setTimeout(() => {
                 document.getElementById('invoice-print-area').classList.add('hidden');
                 document.getElementById('main-app').classList.remove('hidden');
                 document.getElementById('cust-name').value = '';
+                document.getElementById('cust-phone').value = '';
+                document.getElementById('cust-paid').value = '';
                 document.getElementById('search-invoice-input').value = '';
+                document.getElementById('search-results-box').classList.add('hidden');
             }, 800);
         }
     </script>
