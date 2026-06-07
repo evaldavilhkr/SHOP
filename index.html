@@ -1,0 +1,435 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>M/S AL-WASEE HARDWARE AND SANITARY - ইনভেন্টরি ও বিলিং</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts for better Bengali typography -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;600;700&display=swap" rel="stylesheet">
+    <!-- Firebase App and Firestore Libraries -->
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
+    <style>
+        body {
+            font-family: 'Hind Siliguri', sans-serif;
+            background: linear-gradient(135deg, #0f172a 0%, #1e1b4b 100%);
+            min-height: 100vh;
+        }
+        .glass-panel {
+            background: rgba(255, 255, 255, 0.07);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        .glass-card {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            transition: all 0.3s ease;
+        }
+        .glass-card:hover {
+            background: rgba(255, 255, 255, 0.08);
+            border-color: rgba(255, 255, 255, 0.15);
+        }
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: rgba(255, 255, 255, 0.02);
+        }
+        ::-webkit-scrollbar-thumb {
+            background: rgba(255, 255, 255, 0.15);
+            border-radius: 3px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: rgba(255, 255, 255, 0.25);
+        }
+        /* Print Styles */
+        @media print {
+            body {
+                background: white !important;
+                color: black !important;
+            }
+            #main-app, #login-screen {
+                display: none !important;
+            }
+            #invoice-print-area {
+                display: block !important;
+                width: 100% !important;
+                max-width: 100% !important;
+                margin: 0 !important;
+                padding: 0 !important;
+                border: none !important;
+            }
+        }
+    </style>
+</head>
+<body class="text-gray-100 antialiased selection:bg-indigo-500 selection:text-white">
+
+    <!-- পাসওয়ার্ড লগইন স্ক্রিন -->
+    <div id="login-screen" class="fixed inset-0 flex items-center justify-center z-50 px-4">
+        <div class="glass-panel p-8 rounded-2xl shadow-2xl w-full max-w-md text-center border border-white/20">
+            <div class="inline-flex items-center justify-center w-16 h-16 rounded-full bg-indigo-600/30 text-indigo-400 mb-4 border border-indigo-500/30">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+                </svg>
+            </div>
+            <h2 class="text-2xl font-bold mb-1 text-white">সফটওয়্যার লগইন</h2>
+            <p class="text-sm text-gray-400 mb-6">M/S AL-WASEE HARDWARE AND SANITARY</p>
+            
+            <div class="relative mb-4">
+                <input type="password" id="password-input" class="w-full bg-white/10 border border-white/20 rounded-xl px-4 py-3 text-center text-xl text-white tracking-widest focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent placeholder-white/30" placeholder="••••">
+            </div>
+            
+            <button onclick="checkPassword()" class="w-full bg-indigo-600 hover:bg-indigo-500 text-white py-3 rounded-xl font-semibold shadow-lg shadow-indigo-600/30 transition duration-200">প্রবেশ করুন</button>
+            <p id="login-error" class="text-rose-400 text-sm mt-3 hidden font-medium">ভুল পাসওয়ার্ড! আবার চেষ্টা করুন।</p>
+        </div>
+    </div>
+
+    <!-- মূল অ্যাপ্লিকেশন ইন্টারফেস -->
+    <div id="main-app" class="max-w-7xl mx-auto px-4 py-8 hidden">
+        
+        <!-- টপ হেডার বার -->
+        <header class="glass-panel rounded-2xl p-6 mb-8 flex flex-col md:flex-row items-center justify-between border border-white/10 shadow-xl">
+            <div class="text-center md:text-left mb-4 md:mb-0">
+                <h1 class="text-2xl md:text-3xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-indigo-400 via-purple-400 to-pink-400 tracking-wide">
+                    M/S AL-WASEE HARDWARE AND SANITARY
+                </h1>
+                <p class="text-sm text-indigo-300/80 font-medium mt-1">ইনভেন্টরি কন্ট্রোল ও স্মার্ট বিলিং ম্যানেজমেন্ট</p>
+            </div>
+            <div class="flex items-center gap-3">
+                <span class="flex h-3 w-3 relative">
+                    <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+                    <span class="relative inline-flex rounded-full h-3 w-3 bg-emerald-500"></span>
+                </span>
+                <span class="text-sm font-semibold text-emerald-400 bg-emerald-500/10 px-3 py-1 rounded-full border border-emerald-500/20">সিস্টেম সচল</span>
+            </div>
+        </header>
+
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+            
+            <!-- ১. নতুন মাল আপলোড ফর্ম (ইনভেন্টরি) -->
+            <div class="lg:col-span-5 glass-panel p-6 rounded-2xl shadow-xl border border-white/10 flex flex-col justify-between">
+                <div>
+                    <div class="flex items-center gap-3 mb-6 border-b border-white/10 pb-4">
+                        <div class="p-2 bg-blue-500/10 text-blue-400 rounded-lg border border-blue-500/20">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
+                            </svg>
+                        </div>
+                        <h2 class="text-xl font-bold text-white">নতুন মাল আপলোড</h2>
+                    </div>
+                    
+                    <div class="space-y-4">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-300 mb-1">মালের নাম:</label>
+                            <input type="text" id="prod-name" class="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-2.5 text-white focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent">
+                        </div>
+                        <div class="grid grid-cols-2 gap-4">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-300 mb-1">সাইজ:</label>
+                                <input type="text" id="prod-size" class="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-2.5 text-white focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent" placeholder="যেমন: L, XL, 10, 12">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-300 mb-1">পরিমাণ (পিস):</label>
+                                <input type="number" id="prod-qty" class="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-2.5 text-white focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent">
+                            </div>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-300 mb-1">দাম (প্রতি পিস):</label>
+                            <input type="number" id="prod-price" class="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-2.5 text-white focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent">
+                        </div>
+                        
+                        <div class="glass-card p-4 rounded-xl flex items-start gap-3 mt-2">
+                            <input type="checkbox" id="prod-non-inv" class="mt-1 w-4 h-4 text-indigo-600 bg-white/10 border-white/20 rounded focus:ring-indigo-500 focus:ring-offset-0">
+                            <label for="prod-non-inv" class="text-sm text-gray-300 select-none cursor-pointer">
+                                <span class="font-semibold text-amber-400 block mb-0.5">নন-ইনভেন্টরি আইটেম</span>
+                                এটি এমন মাল যা বিক্রি করলে স্টক থেকে পিস কমবে না (শুধু বিল হবে)।
+                            </label>
+                        </div>
+                    </div>
+                </div>
+                
+                <button onclick="uploadProduct()" class="w-full mt-6 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white py-3 rounded-xl font-bold shadow-lg shadow-indigo-600/20 transition duration-200">
+                    সফটওয়্যারে আপলোড করুন
+                </button>
+            </div>
+
+            <!-- ২. বিক্রি ও ইনভয়েস তৈরি সেকশন -->
+            <div class="lg:col-span-7 glass-panel p-6 rounded-2xl shadow-xl border border-white/10 flex flex-col justify-between">
+                <div>
+                    <div class="flex items-center gap-3 mb-6 border-b border-white/10 pb-4">
+                        <div class="p-2 bg-purple-500/10 text-purple-400 rounded-lg border border-purple-500/20">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4" />
+                            </svg>
+                        </div>
+                        <h2 class="text-xl font-bold text-white">মাল বিক্রি ও বিলিং তালিকা</h2>
+                    </div>
+
+                    <!-- মালের তালিকা টেবিল -->
+                    <div class="max-h-[340px] overflow-y-auto mb-6 border border-white/10 rounded-xl bg-black/20">
+                        <table class="w-full text-left text-sm text-gray-300">
+                            <thead class="sticky top-0 bg-slate-900/90 backdrop-blur text-gray-200 font-semibold border-b border-white/10">
+                                <tr>
+                                    <th class="p-3 text-center w-12">সিলেক্ট</th>
+                                    <th class="p-3">মালের নাম</th>
+                                    <th class="p-3">সাইজ</th>
+                                    <th class="p-3 text-center">স্টক</th>
+                                    <th class="p-3 text-right">দাম</th>
+                                </tr>
+                            </thead>
+                            <tbody id="product-list-tbody" class="divide-y divide-white/5">
+                                <!-- ফায়ারবেস থেকে ডেটা ডাইনামিকালি লোড হবে -->
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <!-- কাস্টমার ডিটেইলস -->
+                    <div class="mb-4">
+                        <label class="block text-sm font-medium text-gray-300 mb-1">কাস্টমারের নাম (ঐচ্ছিক):</label>
+                        <input type="text" id="cust-name" class="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-2.5 text-white focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent" placeholder="ক্রেতার নাম লিখুন">
+                    </div>
+                </div>
+
+                <button onclick="processSale()" class="w-full bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white py-3.5 rounded-xl font-bold text-lg shadow-lg shadow-emerald-600/20 transition duration-200">
+                    বিক্রি সম্পন্ন করুন ও ইনভয়েস প্রিন্ট
+                </button>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- ৩. প্রিন্ট করার জন্য ইনভয়েস টেমপ্লেট -->
+    <div id="invoice-print-area" class="hidden bg-white text-black p-8 max-w-md mx-auto border border-gray-300 shadow-lg font-sans">
+        <div class="text-center mb-6 border-b-2 border-gray-800 pb-4">
+            <!-- দোকানের নাম বড়ো করে -->
+            <h1 class="text-2xl font-black tracking-tight text-gray-900 leading-tight">
+                M/S AL-WASEE HARDWARE AND SANITARY
+            </h1>
+            <p class="text-xs uppercase tracking-widest font-semibold text-gray-600 mt-1">সব ধরণের হার্ডওয়্যার ও স্যানিটারি সামগ্রী বিক্রেতা</p>
+            <div class="flex justify-between items-center mt-4 text-xs font-medium text-gray-500">
+                <span>তারিখ: <span id="inv-date" class="text-black"></span></span>
+                <span>রশিদ নং: #<span id="inv-num" class="text-black"></span></span>
+            </div>
+        </div>
+        
+        <div class="mb-4 text-sm bg-gray-50 p-2 rounded border border-gray-100">
+            <p class="text-gray-600"><strong>ক্রেতার নাম:</strong> <span id="inv-cust-name" class="text-gray-900 font-bold ml-1"></span></p>
+        </div>
+        
+        <table class="w-full text-left text-sm mb-6">
+            <thead>
+                <tr class="border-b-2 border-gray-400 bg-gray-100 text-gray-700">
+                    <th class="py-2 px-1">আইটেম বিবরণ (সাইজ)</th>
+                    <th class="py-2 px-1 text-right">মূল্য</th>
+                </tr>
+            </thead>
+            <tbody id="invoice-items-tbody" class="divide-y divide-gray-200">
+                <!-- আইটেম লিস্ট ডাইনামিকালি বসবে -->
+            </tbody>
+        </table>
+        
+        <div class="flex justify-between items-center font-extrabold text-lg border-t-2 border-gray-800 pt-3 px-1">
+            <span>সর্বমোট বিল:</span>
+            <span>৳<span id="inv-total">0</span></span>
+        </div>
+        
+        <div class="text-center mt-8 pt-4 border-t border-dashed border-gray-300 text-xs text-gray-500">
+            আমাদের কাছ থেকে কেনাকাটার জন্য আপনাকে ধন্যবাদ!
+        </div>
+    </div>
+
+
+    <script>
+        // === ফায়ারবেস কনফিগারেশন ===
+        const firebaseConfig = {
+            apiKey: "YOUR_API_KEY",
+            authDomain: "YOUR_AUTH_DOMAIN",
+            projectId: "YOUR_PROJECT_ID",
+            storageBucket: "YOUR_STORAGE_BUCKET",
+            messagingSenderId: "YOUR_MESSAGING_SENDER_ID",
+            appId: "YOUR_APP_ID"
+        };
+
+        // ফায়ারবেস ইনিশিয়ালাইজেশন
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.firestore();
+
+        // === পাসওয়ার্ড স্ক্রিন চেক ===
+        function checkPassword() {
+            const enteredPassword = document.getElementById('password-input').value;
+            if (enteredPassword === '2580') {
+                document.getElementById('login-screen').classList.add('hidden');
+                document.getElementById('main-app').classList.remove('hidden');
+                loadProducts(); 
+            } else {
+                document.getElementById('login-error').classList.remove('hidden');
+            }
+        }
+
+        // এন্টার চাপলে লগইন হওয়ার শর্টকাট
+        document.getElementById('password-input').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                checkPassword();
+            }
+        });
+
+        // === ফায়ারবেসে মাল আপলোড করা ===
+        function uploadProduct() {
+            const name = document.getElementById('prod-name').value.trim();
+            const size = document.getElementById('prod-size').value.trim();
+            const qty = parseInt(document.getElementById('prod-qty').value);
+            const price = parseFloat(document.getElementById('prod-price').value);
+            const isNonInventory = document.getElementById('prod-non-inv').checked;
+
+            if(!name || !size || isNaN(qty) || isNaN(price)) {
+                alert("দয়া করে সব ঘর সঠিকভাবে পূরণ করুন।");
+                return;
+            }
+
+            db.collection("products").add({
+                name: name,
+                size: size,
+                qty: qty,
+                price: price,
+                isNonInventory: isNonInventory,
+                timestamp: firebase.firestore.FieldValue.serverTimestamp()
+            })
+            .then(() => {
+                alert("মাল সফলভাবে সফটওয়্যারে আপলোড হয়েছে!");
+                document.getElementById('prod-name').value = '';
+                document.getElementById('prod-size').value = '';
+                document.getElementById('prod-qty').value = '';
+                document.getElementById('prod-price').value = '';
+                document.getElementById('prod-non-inv').checked = false;
+                loadProducts();
+            })
+            .catch((error) => {
+                console.error("Error adding document: ", error);
+                alert("আপলোড করতে সমস্যা হয়েছে, আবার চেষ্টা করুন।");
+            });
+        }
+
+        // === ফায়ারবেস থেকে মালের লিস্ট স্ক্রিনে দেখানো ===
+        function loadProducts() {
+            db.collection("products").orderBy("timestamp", "desc").get().then((querySnapshot) => {
+                const tbody = document.getElementById('product-list-tbody');
+                tbody.innerHTML = '';
+                
+                querySnapshot.forEach((doc) => {
+                    const product = doc.data();
+                    const row = document.createElement('tr');
+                    row.className = "hover:bg-white/5 transition-colors duration-150 cursor-pointer";
+                    
+                    const stockDisplay = product.isNonInventory ? 
+                        `<span class="text-xs bg-amber-500/10 text-amber-400 px-2 py-0.5 rounded-full border border-amber-500/20 font-medium">Non-Inv</span>` : 
+                        `<span class="font-bold text-gray-200">${product.qty}</span>`;
+
+                    row.innerHTML = `
+                        <td class="p-3 text-center" onclick="event.stopPropagation();">
+                            <input type="checkbox" class="sale-checkbox w-4 h-4 text-emerald-600 bg-white/10 border-white/20 rounded focus:ring-emerald-500 focus:ring-offset-0" data-id="${doc.id}" data-name="${product.name}" data-size="${product.size}" data-price="${product.price}" data-qty="${product.qty}" data-noninv="${product.isNonInventory}">
+                        </td>
+                        <td class="p-3 font-semibold text-white">${product.name}</td>
+                        <td class="p-3 text-gray-400 font-medium">${product.size}</td>
+                        <td class="p-3 text-center">${stockDisplay}</td>
+                        <td class="p-3 text-right font-bold text-emerald-400">৳${product.price}</td>
+                    `;
+                    
+                    row.addEventListener('click', () => {
+                        const cb = row.querySelector('.sale-checkbox');
+                        cb.checked = !cb.checked;
+                    });
+
+                    tbody.appendChild(row);
+                });
+            }).catch((error) => {
+                console.error("Error loading products: ", error);
+            });
+        }
+
+        // === বিক্রি সম্পন্ন করা, অটো-মাইনাস ও ইনভয়েস প্রিন্ট ===
+        function processSale() {
+            const checkboxes = document.querySelectorAll('.sale-checkbox:checked');
+            if (checkboxes.length === 0) {
+                alert("বিক্রি করার জন্য প্রথমে তালিকা থেকে মাল টিক দিয়ে সিলেক্ট করুন।");
+                return;
+            }
+
+            const batch = db.batch();
+            let totalAmount = 0;
+            const invoiceItems = [];
+            let stockError = false;
+
+            checkboxes.forEach((cb) => {
+                const docId = cb.getAttribute('data-id');
+                const name = cb.getAttribute('data-name');
+                const size = cb.getAttribute('data-size');
+                const price = parseFloat(cb.getAttribute('data-price'));
+                const currentQty = parseInt(cb.getAttribute('data-qty'));
+                const isNonInventory = cb.getAttribute('data-noninv') === 'true';
+
+                totalAmount += price;
+                invoiceItems.push({ name, size, price });
+
+                if (!isNonInventory) {
+                    if (currentQty > 0) {
+                        const docRef = db.collection("products").doc(docId);
+                        batch.update(docRef, { qty: currentQty - 1 });
+                    } else {
+                        alert(`দুঃখিত, ${name} (${size}) স্টক এ নেই!`);
+                        stockError = true;
+                    }
+                }
+            });
+
+            if (stockError) return;
+
+            batch.commit().then(() => {
+                printInvoice(invoiceItems, totalAmount);
+                loadProducts();
+            }).catch((error) => {
+                console.error("Error updating stock: ", error);
+                alert("স্টক আপডেট করতে সমস্যা হয়েছে।");
+            });
+        }
+
+        // === ইনভয়েস প্রিন্ট ফাংশন ===
+        function printInvoice(items, total) {
+            const custName = document.getElementById('cust-name').value.trim() || "সাধারণ ক্রেতা";
+            document.getElementById('inv-cust-name').innerText = custName;
+            document.getElementById('inv-date').innerText = new Date().toLocaleDateString('bn-BD', { year: 'numeric', month: 'long', day: 'numeric' });
+            document.getElementById('inv-num').innerText = Math.floor(100000 + Math.random() * 900000);
+            document.getElementById('inv-total').innerText = total;
+
+            const invTbody = document.getElementById('invoice-items-tbody');
+            invTbody.innerHTML = '';
+
+            items.forEach((item) => {
+                const row = document.createElement('tr');
+                row.className = "text-gray-900";
+                row.innerHTML = `
+                    <td class="py-2 px-1 font-medium">${item.name} <span class="text-xs text-gray-600 font-normal">(${item.size})</span></td>
+                    <td class="py-2 px-1 text-right font-semibold">৳${item.price}</td>
+                `;
+                invTbody.appendChild(row);
+            });
+
+            document.getElementById('main-app').classList.add('hidden');
+            document.getElementById('invoice-print-area').classList.remove('hidden');
+
+            window.print();
+
+            setTimeout(() => {
+                document.getElementById('invoice-print-area').classList.add('hidden');
+                document.getElementById('main-app').classList.remove('hidden');
+                document.getElementById('cust-name').value = '';
+            }, 800);
+        }
+    </script>
+</body>
+</html>
