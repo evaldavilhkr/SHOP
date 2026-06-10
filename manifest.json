@@ -1,6 +1,6 @@
 {
   "name": "AL-WASEE",
-  "short_name": "alwasee", 
+  "short_name": "AL-WASEE", 
   "start_url": "./index.html",
   "display": "standalone",
   "background_color": "#ffffff",
